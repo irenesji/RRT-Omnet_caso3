@@ -33,7 +33,8 @@ void Sink::handleMessage(cMessage *msg)
     cPacket *pack = check_and_cast<cPacket *>(msg);
     cPacket *response;
 
-    EV << "Received " << msg->getName() << endl;
+
+    EV << "Received " << msg->getName() << msg->par("seqNum").longValue() << endl;
 
     if(pack->hasBitError()){
         response = new cPacket("NACK",1);
@@ -41,7 +42,11 @@ void Sink::handleMessage(cMessage *msg)
     else{
         response = new cPacket("ACK",1);
     }
-    send(response, "in$o");
+    //Se asocia el número de secuencia del paquete al ACK o NACK
+    response->addPar("seqNum");
+    response->par("seqNum").setLongValue(msg->par("seqNum").longValue());
+    //send(response, "in$o");
+    sendDelayed(response, 0.0002, "in$o");
     //delete msg;
 
     iaTimeHistogram.collect(d);

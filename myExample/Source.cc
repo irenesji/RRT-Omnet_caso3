@@ -33,6 +33,7 @@ void Source::initialize()
 {
     time=0.0005;
     timerMessage = new cMessage("timer");
+    seqNum = 1;
     scheduleAt(simTime(), timerMessage);
 }
 
@@ -40,8 +41,15 @@ void Source::handleMessage(cMessage *msg)
 {
     ASSERT(msg==timerMessage);
 
+
+    //sprintf(num2,"%d",num);
     cPacket *job = new cPacket("job");
+    //Se añade un número de secuencia para identicicar el paquete
+    job->addPar("seqNum");
+    job->par("seqNum").setLongValue(seqNum++);
+
     job->setBitLength(1024);
+
 
     send(job, "out");
 

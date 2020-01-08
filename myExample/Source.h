@@ -30,6 +30,7 @@ class Source : public cSimpleModule
   private:
     cMessage *timerMessage;
     simtime_t time;
+    int seqNum;
 
   public:
      Source();

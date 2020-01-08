@@ -34,9 +34,12 @@ void Queue::initialize()
     // TODO - Generated method body
     queue = new cPacketQueue();
     msgNum=0;
+    //protocol = GOBACKN;
     protocol = STOPANDWAIT;
-    window = NULL;
-    sentInWindow = NULL;
+    window = 5;
+    sentInWindow = 0;
+    firstElemNum = 0;
+    retransmision = false;
     //timerMessage = new cMessage("timer");
     //scheduleAt( simTime(), timerMessage);
 }
@@ -53,20 +56,38 @@ void Queue::handleMessage(cMessage *msg)
     if(msg->getName()=="txFinished")
     {
         cancelEvent(timerMessage);
-        switch(protocol)
+        if(retransmision)
         {
-            case 1:
-                if( sentInWindow < window && !queue->isEmpty() ){
-                    lastPack=queue->pop();
-                    msgOut = lastPack->dup();
-                    send(msgOut, "line$o");
-                    timer=gate("line$o")->getTransmissionChannel()->getTransmissionFinishTime();
-                    scheduleAt(simTime()+timer, timerMessage);
-                    msgNum--;
-                }
 
-            default :
-                break;
+        }
+        else{
+            switch(protocol)
+            {
+                case GOBACKN:
+                    if( sentInWindow < window && !queue->isEmpty() ){
+                        lastPack=queue->pop();
+                        packets.add(lastPack);
+                        msgOut = lastPack->dup();
+                        send(msgOut, "line$o");
+                        timer=gate("line$o")->getTransmissionChannel()->getTransmissionFinishTime();
+                        scheduleAt(simTime()+timer, timerMessage);
+                        sentInWindow++;
+                        msgNum--;
+                    }
+
+                default :
+                    if( !queue->isEmpty() ){
+                        lastPack=queue->pop();
+
+                        msgOut = lastPack->dup();
+                        send(msgOut, "line$o");
+                        timer=gate("line$o")->getTransmissionChannel()->getTransmissionFinishTime();
+                        scheduleAt(simTime()+timer, timerMessage);
+
+                        msgNum--;
+                    }
+                    break;
+            }
         }
 
     }
@@ -80,6 +101,11 @@ void Queue::handleMessage(cMessage *msg)
             EV << "msgNum = " << msgNum << "]\n";
             timer=gate("line$o")->getTransmissionChannel()->getTransmissionFinishTime();
             scheduleAt(timer, timerMessage);
+            if(protocol == GOBACKN)
+            {
+                sentInWindow++;
+            }
+
         }
         else{
             queue->insert(check_and_cast<cPacket *>(msg));
@@ -89,28 +115,56 @@ void Queue::handleMessage(cMessage *msg)
 
     }
     else if(msg->arrivedOn("line$i")){
+        cPacket *arrivedPacket = check_and_cast<cPacket *>(msg);;
         const char *name;
         name = msg->getName();
         EV << "In line: " << name <<"\n";
         if(opp_strcmp("ACK", name)==0){
-            EV<< "ARRIVED ACK" <<"]\n";
-            delete(lastPack);
-            if( !queue->isEmpty() ){
-                lastPack=queue->pop();
-                msgOut = lastPack->dup();
 
-                send(msgOut, "line$o");
-                timer=gate("line$o")->getTransmissionChannel()->getTransmissionFinishTime();
-                scheduleAt(simTime()+timer, timerMessage);
+            switch (protocol)
+            {
+                case 1:
+                    EV<< "ARRIVED ACK "<<"]\n";
+                    packets.remove(msg->par("seqNum").longValue() - firstElemNum);
+                    if( !queue->isEmpty() ){
+                        lastPack=queue->pop();
+                        packets.add(lastPack);
+                        msgOut = lastPack->dup();
+                        send(msgOut, "line$o");
+                        timer=gate("line$o")->getTransmissionChannel()->getTransmissionFinishTime();
+                        scheduleAt(simTime()+timer, timerMessage);
+
+                    }
+
+
+                    break;
+                default:
+                    EV<< "ARRIVED ACK\n";
+                    delete(lastPack);
+                    if( !queue->isEmpty() ){
+                        lastPack=queue->pop();
+                        msgOut = lastPack->dup();
+                        send(msgOut, "line$o");
+                        timer=gate("line$o")->getTransmissionChannel()->getTransmissionFinishTime();
+                        scheduleAt(simTime()+timer, timerMessage);
+
+                    }
+                    break;
 
             }
+
             msgNum--;
 
         }
         else if(opp_strcmp("NACK", name)==0){
-            EV<< "ARRIVED NACK" <<"]\n";
-            send(lastPack->dup(), "line$o");
-            scheduleAt(simTime()+timer, timerMessage);
+            if(protocol == STOPANDWAIT){
+                EV<< "ARRIVED NACK" <<"]\n";
+                send(lastPack->dup(), "line$o");
+                scheduleAt(simTime()+timer, timerMessage);
+            }
+            else if(protocol == GOBACKN){
+
+            }
         }
 
     }

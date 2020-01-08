@@ -33,10 +33,14 @@ class Queue : public cSimpleModule
     cPacketQueue *queue;
     int msgNum;
     cMessage *timerMessage;
+    int firstElemNum;
     int protocol;
     int window;
     int sentInWindow;
     cPacket *lastPack;
+    cArray packets;
+    bool retransmision;
+
   public:
     Queue();
     virtual ~Queue();
