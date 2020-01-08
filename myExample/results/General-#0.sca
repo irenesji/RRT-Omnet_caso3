@@ -1,0 +1,58 @@
+version 2
+run General-0-20191226-02:24:22-6688
+attr configname General
+attr datetime 20191226-02:24:22
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsf ""
+attr measurement ""
+attr network SourceSink
+attr processid 6688
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+statistic SourceSink.sink "interarrival times"
+field count 22
+field mean 0.000341333333
+field stddev 0
+field min 0.000341333333
+field max 0.000341333333
+field sum 0.007509333326
+field sqrsum 2.5631857727716e-06
+bin	-inf	0
+bin	-0.499658666667	0
+bin	-0.46632533333367	0
+bin	-0.43299200000033	0
+bin	-0.399658666667	0
+bin	-0.36632533333367	0
+bin	-0.33299200000033	0
+bin	-0.299658666667	0
+bin	-0.26632533333367	0
+bin	-0.23299200000033	0
+bin	-0.199658666667	0
+bin	-0.16632533333367	0
+bin	-0.13299200000033	0
+bin	-0.099658666667	0
+bin	-0.066325333333667	0
+bin	-0.032992000000333	0
+bin	0.00034133333300002	22
+bin	0.033674666666333	0
+bin	0.067007999999667	0
+bin	0.100341333333	0
+bin	0.13367466666633	0
+bin	0.16700799999967	0
+bin	0.200341333333	0
+bin	0.23367466666633	0
+bin	0.26700799999967	0
+bin	0.300341333333	0
+bin	0.33367466666633	0
+bin	0.36700799999967	0
+bin	0.400341333333	0
+bin	0.43367466666633	0
+bin	0.46700799999967	0
+bin	0.500341333333	0
+
