@@ -1,0 +1,24 @@
+version 2
+run General-0-20200111-08:33:31-7093
+attr configname General
+attr datetime 20200111-08:33:31
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsf ""
+attr measurement ""
+attr network SourceSink
+attr processid 7093
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+vector 0 SourceSink.sink2 arrivals ETV
+attr interpolationmode none
+0	32	0.000682666666	1
+0	46	0.001223999999	1
+0	65	0.001765333332	1
+0	87	0.002306666665	1
+
