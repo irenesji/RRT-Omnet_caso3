@@ -1,15 +1,15 @@
-file 662 1578491297                                             
+file 840 1578495111                                             
 version 2
-run General-0-20200108-14:47:42-5055
+run General-0-20200108-15:50:19-9408
 attr configname General
-attr datetime 20200108-14:47:42
+attr datetime 20200108-15:50:19
 attr experiment General
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvarsf ""
 attr measurement ""
 attr network SourceSink
-attr processid 5055
+attr processid 9408
 attr repetition 0
 attr replication #0
 attr resultdir results
@@ -18,5 +18,5 @@ attr seedset 0
 
 vector 0 SourceSink.sink arrivals ETV
 attr interpolationmode none
-0	421 240 4 57 0.000341333333 0.005754666663 11 1 1 11 11
+0	421 418 4 107 0.000341333333 0.010085333327 19 1 1 19 19
 
